@@ -21,4 +21,3 @@ function draw() {
 function mousePressed() {
   baseColor = color(random(255), random(255), random(255)); // Cambia il colore di base al click del mouse
 }
-
