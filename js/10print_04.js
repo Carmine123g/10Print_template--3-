@@ -1,22 +1,23 @@
+let baseColor;
+
 function setup() {
-    createCanvas(windowWidth, windowHeight);
-   
-  }
-  
-  function draw() {
-    let step = 50; // Dimensioni delle celle
-    for (let x = 0; x < width; x += step) {
-      for (let y = 0; y < height; y += step) {
-        if (random(1) < 0.5) {
-          fill(random(0, 255), random(0, 255)); // Colore casuale fluorescente
-          rect(x, y, step, step);
-        } else{fill(random(0, 255), random(200, 255)); // Colore casuale fluorescente
-          fill(x + step / 2, y + step /2, step, step); 
-          
-        }
-          
-      }
-      
+  createCanvas(windowWidth, windowHeight);
+  noStroke(); // Rimuove i bordi dei quadrati
+  baseColor = color(random(255), random(255), random(255)); // Imposta il colore di base casuale
+}
+
+function draw() {
+  background(255); // Cancella lo schermo a ogni frame
+  let step = 1; // Dimensioni delle celle
+  for (let x = 0; x < width; x += step) {
+    for (let y = 0; y < height; y += step) {
+      let c = lerpColor(baseColor, color(255), random()); // Calcola una sfumatura del colore di base
+      fill(c);
+      rect(x, y, step, step);
     }
   }
-  
+}
+
+function mousePressed() {
+  baseColor = color(random(255), random(255), random(255)); // Cambia il colore di base al click del mouse
+}
