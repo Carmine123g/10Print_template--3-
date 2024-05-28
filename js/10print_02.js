@@ -1,26 +1,57 @@
-let x = 0;
-let y = 0;
-let size = 50; // Definisci la dimensione dei triangoli
-
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  noLoop();
 }
 
 function draw() {
-  strokeWeight(2);
-  if (random(1) < 0.5) {
-    // Disegna un triangolo con vertici in alto a sinistra, in basso a sinistra e in basso a destra
-    triangle(x, y, x, y + size, x + size, y + size);
-  } else {
-    // Disegna un triangolo con vertici in alto a sinistra, in alto a destra e in basso a destra
-    triangle(x, y, x + size, y, x + size, y + size);
-  }
-  x += size;
-  if (x > width) {
-    x = 0;
-    y += size;
-    if (y > height) {
-      noLoop(); // Interrompi il disegno una volta riempito il canvas
+  background(255);
+
+  // Dimensione del quadrato (usato per calcolare il raggio del cerchio)
+  let squareSize = 30;
+  
+  // Calcola il raggio del cerchio (metà della diagonale del quadrato)
+  let circleRadius = squareSize / sqrt(2);
+
+  // Distanza tra i centri delle stelle
+  let spacing = squareSize * 1.5;
+
+  // Disegna le stelle in una griglia
+  for (let x = spacing / 2; x < width; x += spacing) {
+    for (let y = spacing / 2; y < height; y += spacing) {
+      drawStar(x, y, circleRadius);
     }
   }
+}
+
+function drawStar(centerX, centerY, circleRadius) {
+  // Disegna il cerchio
+  noFill();
+  stroke(0);
+  strokeWeight(1);
+  ellipse(centerX, centerY, circleRadius * 2, circleRadius * 2);
+
+  // Disegna la stella a otto punte
+  let numPoints = 8;
+  let angle = TWO_PI / numPoints;
+  let halfAngle = angle / 2.0;
+  let starRadiusOuter = circleRadius;
+  let starRadiusInner = circleRadius / 2;
+
+  fill(0);
+  noStroke();
+  beginShape();
+  for (let a = 0; a < TWO_PI; a += angle) {
+    let sx = centerX + cos(a) * starRadiusOuter;
+    let sy = centerY + sin(a) * starRadiusOuter;
+    vertex(sx, sy);
+    sx = centerX + cos(a + halfAngle) * starRadiusInner;
+    sy = centerY + sin(a + halfAngle) * starRadiusInner;
+    vertex(sx, sy);
+  }
+  endShape(CLOSE);
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  draw();
 }
