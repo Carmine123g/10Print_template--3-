@@ -1,57 +1,95 @@
+let columnGapFraction = 0.5; // Frazione della larghezza di una colonna da utilizzare come spazio tra le colonne
+let numColumns = 0;
+let yellowSquareSize = 0;
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  noLoop();
+  calculateColumnParameters();
+  drawColumns();
 }
 
-function draw() {
-  background(255);
+function calculateColumnParameters() {
+  numColumns = floor(width / (height / 8)); // Calcola il numero di colonne in base alla larghezza della finestra
+  yellowSquareSize = (height - (8 + 1) * yellowSquareSize * columnGapFraction) / 8; // Calcola la dimensione dei quadrati gialli in base all'altezza della finestra
+}
 
-  // Dimensione del quadrato (usato per calcolare il raggio del cerchio)
-  let squareSize = 30;
-  
-  // Calcola il raggio del cerchio (metà della diagonale del quadrato)
-  let circleRadius = squareSize / sqrt(2);
+function drawColumns() {
+  background(255); // Rimuove lo sfondo grigio
 
-  // Distanza tra i centri delle stelle
-  let spacing = squareSize * 1.5;
+  // Disegna le colonne di quadrati
+  for (let col = 0; col < numColumns; col++) {
+    // Calcola la posizione x della colonna corrente
+    let yellowSquareX = yellowSquareSize * col + yellowSquareSize * columnGapFraction * (col + 1);
 
-  // Disegna le stelle in una griglia
-  for (let x = spacing / 2; x < width; x += spacing) {
-    for (let y = spacing / 2; y < height; y += spacing) {
-      drawStar(x, y, circleRadius);
+    // Disegna i quadrati nella colonna corrente
+    for (let i = 0; i < 8; i++) {
+      let yellowSquareY = yellowSquareSize * i + yellowSquareSize * columnGapFraction * (i + 1);
+
+      // Disegna il quadrato giallo più grande
+      noStroke();
+      fill(255);
+      rect(yellowSquareX, yellowSquareY, yellowSquareSize, yellowSquareSize);
+
+      // Dimensioni del quadrato blu più piccolo senza contorno
+      let blueSquareSize = yellowSquareSize * 0.48;
+      let blueSquareX = yellowSquareX + (yellowSquareSize - blueSquareSize) / 2;
+      let blueSquareY = yellowSquareY + (yellowSquareSize - blueSquareSize) / 2;
+
+      fill(255);
+      rect(blueSquareX, blueSquareY, blueSquareSize, blueSquareSize);
+
+      // Dimensioni delle croci
+      let crossSize = blueSquareSize * 0.7;
+
+      // Disegna una croce in ogni angolo del quadrato blu
+      drawCross(blueSquareX, blueSquareY, crossSize);
+      drawCross(blueSquareX + blueSquareSize, blueSquareY, crossSize);
+      drawCross(blueSquareX, blueSquareY + blueSquareSize, crossSize);
+      drawCross(blueSquareX + blueSquareSize, blueSquareY + blueSquareSize, crossSize);
+
+      // Disegna un rombo al centro del quadrato giallo
+      drawDiamond(yellowSquareX + yellowSquareSize / 2, yellowSquareY + yellowSquareSize / 2, yellowSquareSize * 0.4);
     }
+
+    // Disegna linee nere agli estremi della colonna
+    stroke(0);
+    strokeWeight(2);
+    let startX = yellowSquareX;
+    let endX = yellowSquareX + yellowSquareSize;
+    let startY = yellowSquareSize * columnGapFraction * 0.5;
+    let endY = height - yellowSquareSize * columnGapFraction * 0.5;
+    line(startX, startY, startX, endY);
+    line(endX, startY, endX, endY);
+    noStroke();
   }
 }
 
-function drawStar(centerX, centerY, circleRadius) {
-  // Disegna il cerchio
-  noFill();
-  stroke(0);
-  strokeWeight(1);
-  ellipse(centerX, centerY, circleRadius * 2, circleRadius * 2);
-
-  // Disegna la stella a otto punte
-  let numPoints = 8;
-  let angle = TWO_PI / numPoints;
-  let halfAngle = angle / 2.0;
-  let starRadiusOuter = circleRadius;
-  let starRadiusInner = circleRadius / 2;
+function drawCross(x, y, size) {
+  let centerX = x;
+  let centerY = y;
 
   fill(0);
   noStroke();
+
+  ellipse(centerX, centerY, size, size * 0.4);
+  ellipse(centerX, centerY, size * 0.4, size);
+}
+
+function drawDiamond(x, y, size) {
+  noStroke();
+  fill(0);
   beginShape();
-  for (let a = 0; a < TWO_PI; a += angle) {
-    let sx = centerX + cos(a) * starRadiusOuter;
-    let sy = centerY + sin(a) * starRadiusOuter;
-    vertex(sx, sy);
-    sx = centerX + cos(a + halfAngle) * starRadiusInner;
-    sy = centerY + sin(a + halfAngle) * starRadiusInner;
-    vertex(sx, sy);
-  }
+  vertex(x, y - size / 2.5);
+  vertex(x + size / 2.5, y);
+  vertex(x, y + size / 2.5);
+  vertex(x - size / 2.5, y);
   endShape(CLOSE);
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  draw();
+  calculateColumnParameters();
+  drawColumns();
 }
+
+
