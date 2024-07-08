@@ -9,8 +9,8 @@ function setup() {
 }
 
 function calculateColumnParameters() {
-  numColumns = floor(width / (height / 8)); // Calcola il numero di colonne in base alla larghezza della finestra
-  yellowSquareSize = (height - (8 + 1) * yellowSquareSize * columnGapFraction) / 8; // Calcola la dimensione dei quadrati gialli in base all'altezza della finestra
+  yellowSquareSize = height / 8; // Calcola la dimensione dei quadrati bianchi in base all'altezza della finestra
+  numColumns = floor(width / (yellowSquareSize * (1 + columnGapFraction))); // Calcola il numero di colonne in base alla larghezza della finestra e alla frazione di spazio
 }
 
 function drawColumns() {
@@ -18,36 +18,32 @@ function drawColumns() {
 
   // Disegna le colonne di quadrati
   for (let col = 0; col < numColumns; col++) {
-    // Calcola la posizione x della colonna corrente
-    let yellowSquareX = yellowSquareSize * col + yellowSquareSize * columnGapFraction * (col + 1);
+    // Calcola la posizione x della colonna corrente, includendo il gap tra le colonne
+    let yellowSquareX = yellowSquareSize * col * (1 + columnGapFraction);
 
     // Disegna i quadrati nella colonna corrente
     for (let i = 0; i < 8; i++) {
-      let yellowSquareY = yellowSquareSize * i + yellowSquareSize * columnGapFraction * (i + 1);
+      let yellowSquareY = yellowSquareSize * i;
 
-      // Disegna il quadrato giallo più grande
+      // Disegna il quadrato bianco più grande
       noStroke();
-      fill(255);
+      fill(255); // Colore bianco
       rect(yellowSquareX, yellowSquareY, yellowSquareSize, yellowSquareSize);
 
-      // Dimensioni del quadrato blu più piccolo senza contorno
-      let blueSquareSize = yellowSquareSize * 0.48;
-      let blueSquareX = yellowSquareX + (yellowSquareSize - blueSquareSize) / 2;
-      let blueSquareY = yellowSquareY + (yellowSquareSize - blueSquareSize) / 2;
-
-      fill(255);
-      rect(blueSquareX, blueSquareY, blueSquareSize, blueSquareSize);
-
       // Dimensioni delle croci
-      let crossSize = blueSquareSize * 0.7;
+      let crossSize = yellowSquareSize * 0.48 * 0.7;
 
-      // Disegna una croce in ogni angolo del quadrato blu
+      // Posizione delle croci (senza modifiche)
+      let blueSquareX = yellowSquareX + (yellowSquareSize * 0.52) / 2;
+      let blueSquareY = yellowSquareY + (yellowSquareSize * 0.52) / 2;
+
+      // Disegna una croce in ogni angolo del quadrato bianco
       drawCross(blueSquareX, blueSquareY, crossSize);
-      drawCross(blueSquareX + blueSquareSize, blueSquareY, crossSize);
-      drawCross(blueSquareX, blueSquareY + blueSquareSize, crossSize);
-      drawCross(blueSquareX + blueSquareSize, blueSquareY + blueSquareSize, crossSize);
+      drawCross(blueSquareX + yellowSquareSize * 0.48, blueSquareY, crossSize);
+      drawCross(blueSquareX, blueSquareY + yellowSquareSize * 0.48, crossSize);
+      drawCross(blueSquareX + yellowSquareSize * 0.48, blueSquareY + yellowSquareSize * 0.48, crossSize);
 
-      // Disegna un rombo al centro del quadrato giallo
+      // Disegna un rombo al centro del quadrato bianco
       drawDiamond(yellowSquareX + yellowSquareSize / 2, yellowSquareY + yellowSquareSize / 2, yellowSquareSize * 0.4);
     }
 
@@ -56,8 +52,8 @@ function drawColumns() {
     strokeWeight(2);
     let startX = yellowSquareX;
     let endX = yellowSquareX + yellowSquareSize;
-    let startY = yellowSquareSize * columnGapFraction * 0.5;
-    let endY = height - yellowSquareSize * columnGapFraction * 0.5;
+    let startY = 0;
+    let endY = height;
     line(startX, startY, startX, endY);
     line(endX, startY, endX, endY);
     noStroke();
@@ -91,5 +87,3 @@ function windowResized() {
   calculateColumnParameters();
   drawColumns();
 }
-
-
