@@ -25,7 +25,7 @@ function draw() {
 
 function drawRow(row) {
   for (let i = 0; i < cols; i++) {
-    let xOffset = i * (diamondsPerRow + 1) * w; // Offset orizzontale considerando lo spazio bianco
+    let xOffset = i * (diamondsPerRow + 1) * w; // Offset orizzontale considerando plo spazio bianco
     for (let k = 0; k < diamondsPerRow; k++) {
       drawDiamond(xOffset + k * w, row * h, w, h);
     }
@@ -46,6 +46,6 @@ function windowResized() {
   w = width / (cols * (diamondsPerRow + 1));
   h = w * 2;
   background(255);
-  currentRow = 0; // Ricomincia il disegno delle righe
+  currentRow = 0; // Ricomincia il disegno delle righe 
   frameRate(1 / drawSpeed); // Aggiorna il frame rate quando la finestra è ridimensionata
 }
