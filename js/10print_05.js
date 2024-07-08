@@ -1,47 +1,51 @@
-let size =3; // Dimensione dei quadrati
-let positions = []; // Array per memorizzare le posizioni possibili
-let index = 0; // Indice per tenere traccia del quadrato corrente
-let startTime; // Tempo di inizio del disegno
-let duration = 10; // Durata in secondi
+let cols = 10; // Numero di gruppi di colonne (rombi + spazi bianchi)
+let diamondsPerRow = 3; // Numero di rombi per riga
+let w, h; // Larghezza e altezza di un rombo
+let currentRow = 0; // La riga corrente che stiamo disegnando
+let drawSpeed = 0.5; // Velocità di disegno in secondi per riga
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  noStroke(); // Rimuove i bordi dei quadrati
-  // Calcola tutte le posizioni possibili per i quadrati
-  for (let y = 0; y < height; y += size) {
-    for (let x = 0; x < width; x += size) {
-      positions.push({ x: x, y: y });
-    }
-  }
-  shuffle(positions, true); // Mescola le posizioni
-  frameRate(30); // Imposta il frame rate a 30 frame per secondo per velocizzare il disegno
-  startTime = millis(); // Registra il tempo di inizio
+  w = width / (cols * (diamondsPerRow + 1)); // Calcola la larghezza di un rombo
+  h = w * 2; // Calcola l'altezza di un rombo
+  background(255);
+  stroke(0); // Linee più scure (nero)
+  strokeWeight(4); // Linee più spesse
+  frameRate(1 / drawSpeed); // Imposta il frame rate per controllare la velocità di disegno
 }
 
 function draw() {
-  let currentTime = (millis() - startTime) / 100000; // Tempo trascorso in secondi
-  let squaresPerSecond = positions.length / duration; // Numero di quadrati da disegnare al secondo
-  let squaresToDraw = currentTime * squaresPerSecond; // Numero di quadrati da disegnare fino ad ora
+  if (currentRow < height / h) { // Controlla se ci sono ancora righe da disegnare
+    drawRow(currentRow);
+    currentRow++; // Passa alla riga successiva per il prossimo ciclo di draw()
+  } else {
+    noLoop(); // Ferma il disegno quando tutte le righe sono disegnate
+  }
+}
 
-  for (let i = 0; i < squaresToDraw; i++) {
-    if (index < positions.length) {
-      let pos = positions[index];
-      let col = getColor(index);
-
-      // Imposta il colore del quadrato
-      fill(col);
-      rect(pos.x, pos.y, size, size);
-
-      index++;
-    } else {
-      noLoop(); // Ferma il disegno quando tutti i quadrati sono stati disegnati
-      break; // Esci dal ciclo
+function drawRow(row) {
+  for (let i = 0; i < cols; i++) {
+    let xOffset = i * (diamondsPerRow + 1) * w; // Offset orizzontale considerando lo spazio bianco
+    for (let k = 0; k < diamondsPerRow; k++) {
+      drawDiamond(xOffset + k * w, row * h, w, h);
     }
   }
 }
 
-// Funzione per ottenere il colore basato sulla posizione
-function getColor(index) {
-  let brightness = map(index, 0, positions.length, 100, 255);
-  return color(random(brightness), random(brightness), random(brightness));
+function drawDiamond(x, y, w, h) {
+  beginShape();
+  vertex(x + w / 2, y);
+  vertex(x + w, y + h / 2);
+  vertex(x + w / 2, y + h);
+  vertex(x, y + h / 2);
+  endShape(CLOSE);
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  w = width / (cols * (diamondsPerRow + 1));
+  h = w * 2;
+  background(255);
+  currentRow = 0; // Ricomincia il disegno delle righe
+  frameRate(1 / drawSpeed); // Aggiorna il frame rate quando la finestra è ridimensionata
 }

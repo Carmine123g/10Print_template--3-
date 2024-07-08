@@ -3,7 +3,7 @@ let drawnSquares = 0;
 let interval;
 const displayTime = 8000; // 8 seconds
 
-function setup() {
+function setup()) {
   createCanvas(windowWidth, windowHeight);
   noLoop(); // Fermiamo draw() per eseguire solo quando necessario
 
