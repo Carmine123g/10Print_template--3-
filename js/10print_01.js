@@ -107,7 +107,7 @@ function drawNextGroup() {
         rect(offsetX + squareSize, offsetY2, squareSize, squareSize);
         break;
       case 5:
-        // Tavola 2 (terzo quadrato della seconda fila)
+        // Tavola 2 (terzo quadrato a della seconda fila)
         fill(255);
         noStroke();
         rect(offsetX + 2 * squareSize, offsetY2, squareSize, squareSize);
