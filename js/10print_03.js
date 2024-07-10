@@ -1,57 +1,51 @@
+let cols = 10; // Numero di gruppi di colonne (rombi + spazi bianchi)
+let diamondsPerRow = 3; // Numero di rombi per riga
+let w, h; // Larghezza e altezza di un rombo
+let currentRow = 0; // La riga corrente che stiamo disegnando
+let drawSpeed = 0.5; // Velocità di disegno in secondi per riga
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  noLoop();
+  w = width / (cols * (diamondsPerRow + 1)); // Calcola la larghezza di un rombo
+  h = w * 2; // Calcola l'altezza di un rombo
+  background(255);
+  stroke(0); // Linee più scure (nero)
+  strokeWeight(4); // Linee più spesse
+  frameRate(1 / drawSpeed); // Imposta il frame rate per controllare la velocità di disegno
 }
 
 function draw() {
-  background(255);
+  if (currentRow < height / h) { // Controlla se ci sono ancora righe da disegnare
+    drawRow(currentRow);
+    currentRow++; // Passa alla riga successiva per il prossimo ciclo di draw()
+  } else {
+    noLoop(); // Ferma il disegno quando tutte le righe sono disegnate
+  }
+}
 
-  // Dimensione del quadrato (usato per calcolare il raggio del cerchio)
-  let squareSize = 30;
-  
-  // Calcola il raggio del cerchio (metà della diagonale del quadrato)
-  let circleRadius = squareSize / sqrt(2);
-
-  // Distanza tra i centri delle stelle
-  let spacing = squareSize * 1.5;
-
-  // Disegna le stelle in una griglia
-  for (let x = spacing / 2; x < width; x += spacing) {
-    for (let y = spacing / 2; y < height; y += spacing) {
-      drawStar(x, y, circleRadius);
+function drawRow(row) {
+  for (let i = 0; i < cols; i++) {
+    let xOffset = i * (diamondsPerRow + 1) * w; // Offset orizzontale considerando plo spazio bianco
+    for (let k = 0; k < diamondsPerRow; k++) {
+      drawDiamond(xOffset + k * w, row * h, w, h);
     }
   }
 }
 
-function drawStar(centerX, centerY, circleRadius) {
-  // Disegna il cerchio
-  noFill();
-  stroke(0);
-  strokeWeight(1);
-  ellipse(centerX, centerY, circleRadius * 2, circleRadius * 2);
-
-  // Disegna la stella a otto punte
-  let numPoints = 8;
-  let angle = TWO_PI / numPoints;
-  let halfAngle = angle / 2.0;
-  let starRadiusOuter = circleRadius;
-  let starRadiusInner = circleRadius / 2;
-
-  fill(0);
-  noStroke();
+function drawDiamond(x, y, w, h) {
   beginShape();
-  for (let a = 0; a < TWO_PI; a += angle) {
-    let sx = centerX + cos(a) * starRadiusOuter;
-    let sy = centerY + sin(a) * starRadiusOuter;
-    vertex(sx, sy);
-    sx = centerX + cos(a + halfAngle) * starRadiusInner;
-    sy = centerY + sin(a + halfAngle) * starRadiusInner;
-    vertex(sx, sy);
-  }
+  vertex(x + w / 2, y);
+  vertex(x + w, y + h / 2);
+  vertex(x + w / 2, y + h);
+  vertex(x, y + h / 2);
   endShape(CLOSE);
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  draw();
+  w = width / (cols * (diamondsPerRow + 1));
+  h = w * 2;
+  background(255);
+  currentRow = 0; // Ricomincia il disegno delle righe 
+  frameRate(1 / drawSpeed); // Aggiorna il frame rate quando la finestra è ridimensionata
 }
