@@ -1,6 +1,7 @@
 let columnGapFraction = 0.5; // Frazione della larghezza di una colonna da utilizzare come spazio tra le colonne
 let numColumns = 0;
 let yellowSquareSize = 0;
+let adjustedSquareSize = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -9,8 +10,9 @@ function setup() {
 }
 
 function calculateColumnParameters() {
-  yellowSquareSize = height / 8; // Calcola la dimensione dei quadrati bianchi in base all'altezza della finestra
+  yellowSquareSize = height / 8; // Calcola la dimensione dei quadrati gialli in base all'altezza della finestra
   numColumns = floor(width / (yellowSquareSize * (1 + columnGapFraction))); // Calcola il numero di colonne in base alla larghezza della finestra e alla frazione di spazio
+  adjustedSquareSize = width / (numColumns * (1 + columnGapFraction)); // Calcola la nuova dimensione dei quadrati per adattarsi alla larghezza
 }
 
 function drawColumns() {
@@ -19,39 +21,39 @@ function drawColumns() {
   // Disegna le colonne di quadrati
   for (let col = 0; col < numColumns; col++) {
     // Calcola la posizione x della colonna corrente, includendo il gap tra le colonne
-    let yellowSquareX = yellowSquareSize * col * (1 + columnGapFraction);
+    let yellowSquareX = adjustedSquareSize * col * (1 + columnGapFraction);
 
     // Disegna i quadrati nella colonna corrente
     for (let i = 0; i < 8; i++) {
-      let yellowSquareY = yellowSquareSize * i;
+      let yellowSquareY = adjustedSquareSize * i;
 
       // Disegna il quadrato bianco più grande
       noStroke();
       fill(255); // Colore bianco
-      rect(yellowSquareX, yellowSquareY, yellowSquareSize, yellowSquareSize);
+      rect(yellowSquareX, yellowSquareY, adjustedSquareSize, adjustedSquareSize);
 
       // Dimensioni delle croci
-      let crossSize = yellowSquareSize * 0.48 * 0.7;
+      let crossSize = adjustedSquareSize * 0.48 * 0.7;
 
       // Posizione delle croci (senza modifiche)
-      let blueSquareX = yellowSquareX + (yellowSquareSize * 0.52) / 2;
-      let blueSquareY = yellowSquareY + (yellowSquareSize * 0.52) / 2;
+      let blueSquareX = yellowSquareX + (adjustedSquareSize * 0.52) / 2;
+      let blueSquareY = yellowSquareY + (adjustedSquareSize * 0.52) / 2;
 
       // Disegna una croce in ogni angolo del quadrato bianco
       drawCross(blueSquareX, blueSquareY, crossSize);
-      drawCross(blueSquareX + yellowSquareSize * 0.48, blueSquareY, crossSize);
-      drawCross(blueSquareX, blueSquareY + yellowSquareSize * 0.48, crossSize);
-      drawCross(blueSquareX + yellowSquareSize * 0.48, blueSquareY + yellowSquareSize * 0.48, crossSize);
+      drawCross(blueSquareX + adjustedSquareSize * 0.48, blueSquareY, crossSize);
+      drawCross(blueSquareX, blueSquareY + adjustedSquareSize * 0.48, crossSize);
+      drawCross(blueSquareX + adjustedSquareSize * 0.48, blueSquareY + adjustedSquareSize * 0.48, crossSize);
 
       // Disegna un rombo al centro del quadrato bianco
-      drawDiamond(yellowSquareX + yellowSquareSize / 2, yellowSquareY + yellowSquareSize / 2, yellowSquareSize * 0.4);
+      drawDiamond(yellowSquareX + adjustedSquareSize / 2, yellowSquareY + adjustedSquareSize / 2, adjustedSquareSize * 0.4);
     }
 
     // Disegna linee nere agli estremi della colonna
     stroke(0);
     strokeWeight(2);
     let startX = yellowSquareX;
-    let endX = yellowSquareX + yellowSquareSize;
+    let endX = yellowSquareX + adjustedSquareSize;
     let startY = 0;
     let endY = height;
     line(startX, startY, startX, endY);
